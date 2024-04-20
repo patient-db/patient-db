@@ -10,13 +10,10 @@ function ShowRecordsDoctor(){
     const [databaseContract, setDatabaseContract] = useState(null);
     const [allData, setAllData] = useState([])
     const patientIdRef = useRef(null)
+    const [patientDataReady, setPatientDataReady] = useState(false)
+    const [patientData, setPatientData] = useState({})
     useEffect(() => {
         async function onInit(){
-            const patId = localStorage.getItem("patientId")
-            if (patId === "" || !patId){
-                // navigate to login page
-            }
-            // setPatientId(patId);
             await window.ethereum.enable();
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
@@ -38,6 +35,20 @@ function ShowRecordsDoctor(){
 
     const getAllData = async (databaseContract) => {
         let records = []
+        const BASE = process.env.REACT_APP_BASE_URL;
+
+        try {
+            const res = await fetch(BASE + "/patient?patient_id=" + patientIdRef.current.value)
+            const jsonRes = await res.json()
+            if (jsonRes.error !== undefined){
+                alert(jsonRes.error)
+            } else {
+                setPatientData(jsonRes)
+                setPatientDataReady(true)
+            }
+        } catch {
+            alert("Profile details could not be fetched")
+        }
 
         const reports = await databaseContract.methods.reports().call()
         for(let i = 0; i < reports; ++i)
@@ -48,7 +59,7 @@ function ShowRecordsDoctor(){
                 medReportId
             } = await databaseContract.methods.data(i).call()
             const originalDataObject = JSON.parse(patientData)
-            if (originalDataObject.patientData.patientId === parseInt(patientIdRef.current.value)){
+            if (originalDataObject.patientData.patientId === patientIdRef.current.value){
                 let rowData = {...originalDataObject.patientData, ...originalDataObject.recordData}
                 records.push(rowData)
             }
@@ -67,6 +78,28 @@ function ShowRecordsDoctor(){
                 <input type="number" placeholder="Enter patient's id" ref={patientIdRef} />
                 <button onClick={handleGetRecords}>Get Records</button>
             </div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Weight (kg)</th>
+                    <th>Height (cm)</th>
+                    <th>Blood Group</th>
+                </tr>
+                {
+                    patientDataReady
+                    ? <tr>
+                        <td>{patientData["name"]}</td>
+                        <td>{patientData["age"]}</td>
+                        <td>{patientData["gender"]}</td>
+                        <td>{patientData["weight"]}</td>
+                        <td>{patientData["height"]}</td>
+                        <td>{patientData["blood_group"]}</td>
+                    </tr>
+                    : ""
+                }
+            </table>
             <table>
                 <tr>
                     <th>Sr. No.</th>

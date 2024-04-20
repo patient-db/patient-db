@@ -16,6 +16,11 @@ function DoctorHomePage(){
             setDocId(uid)
         }
     }, [])
+
+    const handleLogout = () => {
+        window.localStorage.removeItem("doctor_uid")
+        navigate("/")
+    }
     return (
         <>
             {
@@ -29,6 +34,9 @@ function DoctorHomePage(){
                         <div onClick={() => setActiveSection("patient-profile")}>
                             <h3>Profile</h3>
                         </div>
+                        <div onClick={handleLogout}>
+                            <h3>Logout</h3>
+                        </div>
                     </div>
                     <div className="menu-separator"></div>
                 </div>
@@ -36,7 +44,7 @@ function DoctorHomePage(){
                     {
                         activeSection === "medical-history" 
                         ? <ShowRecordsDoctor />
-                        : <DoctorProfile />
+                        : <DoctorProfile doctorId={docId} />
                     }
                 </div>
             </div>

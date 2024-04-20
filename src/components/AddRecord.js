@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Web3 from 'web3';
 import { PATIENT_ABI, PATIENT_ADDRESS } from "../contracts/Patient";
 import { DATABASE_ABI, DATABASE_ADDRESS } from "../contracts/Database";
+import { useNavigate } from "react-router-dom";
 import '../styles/addrecord.css';
 
 function AddRecord(){
@@ -10,14 +11,17 @@ function AddRecord(){
     const [patientContract, setPatientContract] = useState(null);
     const [databaseContract, setDatabaseContract] = useState(null);
     const [allData, setAllData] = useState([])
-    const [patientId, setPatientId] = useState(2)
+    const [patientId, setPatientId] = useState(null)
+    const navigate = useNavigate()
     useEffect(() => {
         async function onInit(){
-            const patId = localStorage.getItem("patientId")
+            const BASE = process.env.REACT_APP_BASE_URL
+            const patId = localStorage.getItem("patient_uid")
             if (patId === "" || !patId){
-                // navigate to login page
+                navigate("/")
+                return
             }
-            // setPatientId(patId);
+            setPatientId(patId);
             await window.ethereum.enable();
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
@@ -52,15 +56,12 @@ function AddRecord(){
         console.log(e)
         console.log(patientId)
         const patientData = {"patientId": patientId}
-        const weight = e.target[0].value;
-        const height = e.target[1].value;
-        const bloodGroup = e.target[2].value;
-        const diseaseName = e.target[3].value;
-        const diseaseDescription = e.target[4].value;
-        const diseaseStartedOn = e.target[5].value;
-        const recordData = {"weight": weight, "height": height, "bloodGroup": bloodGroup, "diseaseName": diseaseName, "diseaseDescription": diseaseDescription, "diseaseStartedOn": diseaseStartedOn, "patientId": patientId}
+        const diseaseName = e.target[0].value;
+        const diseaseDescription = e.target[1].value;
+        const diseaseStartedOn = e.target[2].value;
+        const recordData = {"diseaseName": diseaseName, "diseaseDescription": diseaseDescription, "diseaseStartedOn": diseaseStartedOn, "patientId": patientId}
         const jsonString = JSON.stringify({patientData, recordData})
-        databaseContract.methods.saveData(jsonString, "111").send({from: account})
+        databaseContract.methods.saveData(jsonString, parseInt(Math.random() * 1000000).toString()).send({from: account})
         .once('receipt', receipt => {
             console.log("saved", receipt)
         })
@@ -92,9 +93,6 @@ function AddRecord(){
         <div className="add-record-wrapper">
             <form onSubmit={addRecord}>
                 <h1>Add a record</h1>
-                <input type="number" placeholder="Weight (kg)" />
-                <input type="number" placeholder="Height (cm)" />
-                <input type="text" placeholder="Blood Group" />
                 <input type="text" placeholder="Disease Name" />
                 <input type="text" placeholder="Disease Description" />
                 <input type="text" placeholder="Disease started from" />

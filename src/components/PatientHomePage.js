@@ -17,6 +17,11 @@ function PatientHomePage(){
             setPatientId(patId)
         }
     }, [])
+
+    const handleLogout = () => {
+        window.localStorage.removeItem("patient_uid")
+        navigate("/")
+    }
     return (
         <>
         {
@@ -32,6 +37,9 @@ function PatientHomePage(){
                     </div>
                     <div onClick={() => setActiveSection("patient-profile")}>
                         <h3>Profile</h3>
+                    </div>
+                    <div onClick={handleLogout}>
+                        <h3>Logout</h3>
                     </div>
                 </div>
                 <div className="menu-separator"></div>

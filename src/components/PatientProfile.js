@@ -10,6 +10,7 @@ function PatientProfile({patientId}){
     const [weight, setWeight] = useState(0)
     const [height, setHeight] = useState(0)
     const [phoneNum, setPhoneNum] = useState(0)
+    const [gender, setGender] = useState("")
     useEffect(() => {
         async function onInit(){
             try {
@@ -26,6 +27,7 @@ function PatientProfile({patientId}){
                     setWeight(jsonRes.weight)
                     setHeight(jsonRes.height)
                     setPhoneNum(jsonRes.phone_number)
+                    setGender(jsonRes.gender)
                     setLoading(false)
                 }
             } catch {
@@ -45,7 +47,8 @@ function PatientProfile({patientId}){
             "age": age,
             "weight": weight,
             "height": height,
-            "blood_group": bloodGroup
+            "blood_group": bloodGroup,
+            "gender": gender
         }
         try {
             const res = await fetch(BASE + "/patient", {
@@ -92,6 +95,13 @@ function PatientProfile({patientId}){
                     <input type="number" defaultValue={patientData["age"]} onChange={(e) => {
                         setAge(e.target.value)
                     }} value={age} ></input>
+                </section>
+                <section>
+                    <label>Gender</label>
+                    <select value={gender} onchange={(e) => setGender(e.target.value)}>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
                 </section>
                 <section>
                     <label>Weight (kg)</label>

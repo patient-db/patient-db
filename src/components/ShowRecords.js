@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Web3 from 'web3';
 import { PATIENT_ABI, PATIENT_ADDRESS } from "../contracts/Patient";
 import { DATABASE_ABI, DATABASE_ADDRESS } from "../contracts/Database";
+import { useNavigate } from "react-router-dom";
 import '../styles/showrecords.css';
 
 function ShowRecords(){
@@ -9,14 +10,16 @@ function ShowRecords(){
     const [account, setAccount] = useState(null);
     const [databaseContract, setDatabaseContract] = useState(null);
     const [allData, setAllData] = useState([])
-    const [patientId, setPatientId] = useState(2)
+    const [patientId, setPatientId] = useState(null)
+    const navigate = useNavigate()
     useEffect(() => {
         async function onInit(){
-            const patId = localStorage.getItem("patientId")
+            const patId = localStorage.getItem("patient_uid")
             if (patId === "" || !patId){
-                // navigate to login page
+                navigate("/")
+                return;
             }
-            // setPatientId(patId);
+            setPatientId(patId);
             await window.ethereum.enable();
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];

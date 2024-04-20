@@ -60,9 +60,10 @@ function LoginPage(){
                     name: e.target[4].value,
                     phone_number: e.target[5].value,
                     age: e.target[6].value,
-                    weight: e.target[7].value,
-                    height: e.target[8].value,
-                    blood_group: e.target[9].value
+                    gender: e.target[7].value,
+                    weight: e.target[8].value,
+                    height: e.target[9].value,
+                    blood_group: e.target[10].value
                 }
                 try {
                     const res = await fetch(BASE + "/patient/register", {
@@ -121,7 +122,7 @@ function LoginPage(){
                     if (jsonRes.error !== undefined){
                         alert(jsonRes.error)
                     } else {
-                        window.localStorage.setItem("patient_uid", jsonRes.doctor_id)
+                        window.localStorage.setItem("patient_uid", jsonRes.patient_id)
                         alert("Login successful")
                         navigate("/patient/profile")
                     }
@@ -165,6 +166,10 @@ function LoginPage(){
                         : <>
                             <input type="number" placeholder="Phone Number"></input>
                             <input type="number" placeholder="Age"></input>
+                            <select>
+                                <option selected={true} value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
                             <input type="number" placeholder="Weight (kg)"></input>
                             <input type="number" placeholder="Height (cm)"></input>
                             <input type="text" placeholder="Blood Group"></input>
