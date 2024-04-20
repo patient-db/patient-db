@@ -7,7 +7,7 @@ PatientDB is a decentralized medical records storage vault, where patients can s
 ## Demo Video Link
 
 ## Presentation Link
-[Presentation](link)
+[Presentation]([link](https://docs.google.com/presentation/d/15L5oYNh9JDLAJF7poS4gHbzoJk1PvFe1))
 ## Table of Contents:
 ## Technology Stack
  - Solidity and Smart contracts
