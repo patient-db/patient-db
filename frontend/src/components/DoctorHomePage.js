@@ -7,13 +7,25 @@ import { useNavigate } from "react-router-dom";
 function DoctorHomePage(){
     const navigate = useNavigate();
     const [docId, setDocId] = useState(null)
+    const [docName, setDocName] = useState("")
     const [activeSection, setActiveSection] = useState("medical-history")
+    
     useEffect(() => {
+        const BASE = process.env.REACT_APP_BASE_URL
         const uid = window.localStorage.getItem("doctor_uid")
         if (uid === "" || !uid){
             navigate("/")
         } else {
             setDocId(uid)
+            fetch(BASE + "/doctor?doctor_id=" + uid)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error !== undefined){
+                    alert(data.error)
+                } else {
+                    setDocName(data.name)
+                }
+            })
         }
     }, [])
 
@@ -46,6 +58,10 @@ function DoctorHomePage(){
                         ? <ShowRecordsDoctor />
                         : <DoctorProfile doctorId={docId} />
                     }
+                </div>
+                <div id="uid-data-wrapper">
+                    <p>Hello, {docName}</p>
+                    <p>Doctor ID: {docId}</p>
                 </div>
             </div>
             }

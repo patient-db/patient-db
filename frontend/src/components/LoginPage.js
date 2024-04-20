@@ -134,6 +134,7 @@ function LoginPage(){
     }
     return (
         <div className="login-wrapper">
+            <h1 id="website-title">PatientDB</h1>
             <form id="login-form" className={formType === "login" ? "form-active" : "form-inactive"} onSubmit={(e) => handleSubmit(e)}>
                 <h1>Login</h1>
                 <div className="login-as-wrapper">

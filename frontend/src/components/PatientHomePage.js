@@ -9,12 +9,23 @@ function PatientHomePage(){
     const navigate = useNavigate()
     const [activeSection, setActiveSection] = useState("add-record")
     const [patientId, setPatientId] = useState(null)
+    const [patientName, setPatientName] = useState("")
     useEffect(() => {
+        const BASE = process.env.REACT_APP_BASE_URL
         const patId = window.localStorage.getItem("patient_uid")
         if (patId === "" || !patId){
             navigate("/")
         } else {
             setPatientId(patId)
+            fetch(BASE + "/patient?patient_id=" + patId)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error !== undefined){
+                    alert(data.error)
+                } else {
+                    setPatientName(data.name)
+                }
+            })
         }
     }, [])
 
@@ -52,6 +63,10 @@ function PatientHomePage(){
                     ? <ShowRecords />
                     : <PatientProfile patientId={patientId} />
                 }
+            </div>
+            <div id="uid-data-wrapper">
+                <p>Hello, {patientName}</p>
+                <p>Patient ID: {patientId}</p>
             </div>
         </div>
             }

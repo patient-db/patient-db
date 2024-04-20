@@ -52,3 +52,11 @@
     width: 100%;
     min-height: 100%;
 }
+
+#uid-data-wrapper {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    color: #57a2ff;
+    font-size: 1rem;
+}

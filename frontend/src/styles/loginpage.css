@@ -142,3 +142,9 @@
 {
     display: none !important;
 }
+
+#website-title {
+    margin-bottom: 2rem;
+    color: #57a2ff;
+    font-size: 3rem;
+}
