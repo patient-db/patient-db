@@ -79,6 +79,16 @@
     height: 200px;
 }
 
+.add-record-wrapper form select {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid transparent;
+}
 .add-record-wrapper form textarea:focus {
     padding-left: 0.75rem;
     padding-right: 0.75rem;

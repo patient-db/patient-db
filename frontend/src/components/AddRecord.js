@@ -13,14 +13,40 @@ function AddRecord(){
     const [allData, setAllData] = useState([])
     const [patientId, setPatientId] = useState(null)
     const navigate = useNavigate()
+    const [memberNames, setMemberNames] = useState([])
+    const [memberIds, setMemberIds] = useState([])
+    const [currMember, setCurrMember] = useState("Yourself")
     useEffect(() => {
         async function onInit(){
+            const BASE = process.env.REACT_APP_BASE_URL
             const patId = localStorage.getItem("patient_uid")
             if (patId === "" || !patId){
                 navigate("/")
                 return
             }
             setPatientId(patId);
+            try {
+                const res = await fetch(BASE + "/family?owner_id=" + patId)
+                const jsonRes = await res.json()
+                if (jsonRes.error){
+                    alert(jsonRes.error)
+                } else {
+                    const _memberNames = []
+                    const _memberIds = []
+                    var count = 0
+                    jsonRes.members.forEach(i => {
+                        _memberNames.push(i[1])
+                        _memberIds.push(i[7])
+                        count++;
+                        if (count === jsonRes.members.length){
+                            setMemberNames(_memberNames)
+                            setMemberIds(_memberIds)
+                        }
+                    })
+                } 
+            } catch {
+                alert("Some error occured")
+            }
             await window.ethereum.enable();
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
@@ -52,13 +78,13 @@ function AddRecord(){
 
     const addRecord = (e) => {
         e.preventDefault()
-        console.log(e)
-        console.log(patientId)
-        const patientData = {"patientId": patientId}
-        const diseaseName = e.target[0].value;
-        const diseaseDescription = e.target[1].value;
-        const diseaseStartedOn = e.target[2].value;
-        const recordData = {"diseaseName": diseaseName, "diseaseDescription": diseaseDescription, "diseaseStartedOn": diseaseStartedOn, "patientId": patientId}
+        const _patientId = currMember === "Yourself" ? patientId : memberIds[memberNames.indexOf(currMember)]
+        console.log(_patientId);
+        const patientData = {"patientId": _patientId}
+        const diseaseName = e.target[1].value;
+        const diseaseDescription = e.target[2].value;
+        const diseaseStartedOn = e.target[3].value;
+        const recordData = {"diseaseName": diseaseName, "diseaseDescription": diseaseDescription, "diseaseStartedOn": diseaseStartedOn, "patientId": _patientId}
         const jsonString = JSON.stringify({patientData, recordData})
         databaseContract.methods.saveData(jsonString, parseInt(Math.random() * 1000000).toString()).send({from: account})
         .once('receipt', receipt => {
@@ -92,6 +118,12 @@ function AddRecord(){
         <div className="add-record-wrapper">
             <form onSubmit={addRecord}>
                 <h1>Add a record</h1>
+                <select onChange={(e) => setCurrMember(e.target.value)}>
+                    <option selected={true}>Yourself</option>
+                    {
+                        [...Array.from(memberNames.map(i => <option>{i}</option>))]
+                    }
+                </select>
                 <input type="text" placeholder="Disease Name" />
                 <textarea type="text" placeholder="Disease Description" />
                 <input type="date" placeholder="Disease started from" />

@@ -99,7 +99,7 @@ function ShowRecordsDoctor(){
                 medReportId
             } = await databaseContract.methods.data(i).call()
             const originalDataObject = JSON.parse(patientData)
-            if (originalDataObject.patientData.patientId === patientIdRef.current.value){
+            if (parseInt(originalDataObject.patientData.patientId) === parseInt(patientIdRef.current.value)){
                 let rowData = {...originalDataObject.patientData, ...originalDataObject.recordData}
                 records.push(rowData)
             }

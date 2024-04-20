@@ -4,6 +4,7 @@ import ShowRecords from "./ShowRecords";
 import '../styles/patienthome.css';
 import PatientProfile from "./PatientProfile";
 import { useNavigate } from "react-router-dom";
+import ManageFamily from "./ManageFamily";
 
 function PatientHomePage(){
     const navigate = useNavigate()
@@ -46,6 +47,9 @@ function PatientHomePage(){
                     <div onClick={() => setActiveSection("medical-history")}>
                         <h3>Medical history</h3>
                     </div>
+                    <div onClick={() => setActiveSection("manage-family")}>
+                        <h3>Manage Family</h3>
+                    </div>
                     <div onClick={() => setActiveSection("patient-profile")}>
                         <h3>Profile</h3>
                     </div>
@@ -61,7 +65,9 @@ function PatientHomePage(){
                     ? <AddRecord />
                     : activeSection === "medical-history" 
                     ? <ShowRecords />
-                    : <PatientProfile patientId={patientId} />
+                    : activeSection === "patient-profile" 
+                    ? <PatientProfile patientId={patientId} />
+                    : <ManageFamily />
                 }
             </div>
             <div id="uid-data-wrapper">
