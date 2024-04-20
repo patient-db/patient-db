@@ -3,6 +3,9 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # Suppress tensorflow warnings
 
@@ -22,7 +25,8 @@ api = Api(app)
 load_dotenv()
 
 db_url = os.getenv("SECRET_KEY")
-
+server_email = os.getenv("EMAIL")
+server_password = os.getenv("PASSWORD")
 
 
 
@@ -79,6 +83,29 @@ class PatientRegisterResource(Resource):
         cursor.close()
         conn.close()
 
+        # send a success email with patient id
+
+        server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+        server.starttls()
+        try: 
+            server.login(server_email, server_password)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to login to the email server"}), 500)
+        
+        msg = MIMEMultipart()
+        msg['From'] = server_email
+        msg['To'] = email
+        msg['Subject'] = "User Registration Successful"
+        body = f"Hello {name},\n\nYour registration was successful. Your patient ID is {UID}. Please use this ID for future references.\n\nRegards,\nPatientDB Team"
+        msg.attach(MIMEText(body, 'plain'))
+        text = msg.as_string()
+
+        try:
+            server.sendmail(server_email, email, text)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to send the email"}), 500)
+
+        server.quit()
         return make_response(jsonify({"message": "Patient created successfully", "uid": UID}), 201)
 
 class PatientLoginResource(Resource):
@@ -114,6 +141,29 @@ class PatientDetailsResource(Resource):
         cursor = conn.cursor()
 
         patient_id = request.args.get("patient_id")
+        if int(patient_id) >= 1000000:
+            cursor.execute("SELECT * FROM FamilyMembers WHERE patient_id = %s", (patient_id, ))
+            patient = cursor.fetchone()
+
+            if patient is None:
+                return make_response(jsonify({"error": "Invalid patient id"}), 401)
+            print(patient)
+
+            # return all the patient details
+
+            patient_details = {
+                "owner_id": patient[0],
+                "name": patient[1],
+                "age": patient[2],
+                "weight": patient[3],
+                "height": patient[4],
+                "blood_group": patient[5],
+                "gender": patient[6]
+            }
+
+            # return as a response
+
+            return make_response(jsonify(patient_details), 200)
 
         cursor.execute("SELECT * FROM patients WHERE patient_id = %s", (patient_id, ))
         patient = cursor.fetchone()
@@ -204,6 +254,30 @@ class DoctorRegisterResource(Resource):
         conn.commit()
         cursor.close()
         conn.close()
+
+        # send a success email with doctor id
+
+        server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+        server.starttls()
+        try: 
+            server.login(server_email, server_password)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to login to the email server"}), 500)
+
+        msg = MIMEMultipart()
+        msg['From'] = server_email
+        msg['To'] = email
+        msg['Subject'] = "User Registration Successful"
+        body = f"Hello {name},\n\nYour registration was successful. Your doctor ID is {UID}. Please use this ID for future references.\n\nRegards,\nPatientDB Team"
+        msg.attach(MIMEText(body, 'plain'))
+        text = msg.as_string()
+
+        try:
+            server.sendmail(server_email, email, text)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to send the email"}), 500)
+        
+        server.quit()
 
         return make_response(jsonify({"message": "Doctor created successfully", "uid": UID}), 201)
 
@@ -302,6 +376,46 @@ class SummaryResource(Resource):
 
         return make_response(jsonify({"summary": summary[0]["summary_text"].capitalize()}), 200)
 
+class FamilyMemberResource(Resource):
+    def post(self):
+        conn = connect_to_db()
+        if conn is None:
+            return make_response(jsonify({"error": "Failed to connect to the database"}), 500)
+
+        cursor = conn.cursor()
+        data = request.get_json()
+        print("ERE")
+        owner_id = data.get("owner_id")
+        name = data.get("name")
+        age = data.get("age")
+        weight = data.get("weight")
+        height = data.get("height")
+        blood_group = data.get("blood_group")
+        gender = data.get("gender")
+
+        cursor.execute("INSERT INTO FamilyMembers VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING patient_id", (owner_id, name, age, weight, height, blood_group, gender))
+        patient_id = cursor.fetchone()[0]
+        print(patient_id)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return make_response(jsonify({"message": "Family member added successfully", "patient_id": patient_id}), 200)
+
+    def get(self):
+        conn = connect_to_db()
+        if conn is None:
+            return make_response(jsonify({"error": "Failed to connect to the database"}), 500)
+
+        cursor = conn.cursor()
+        owner_id = request.args.get("owner_id")
+
+        cursor.execute("SELECT * FROM FamilyMembers WHERE owner_id = (%s)", (owner_id, ))
+        members = cursor.fetchall()
+
+        return make_response(jsonify({"members": members}), 200)
+
 
 api.add_resource(PatientRegisterResource, "/patient/register")
 api.add_resource(PatientLoginResource, "/patient/login")
@@ -310,6 +424,7 @@ api.add_resource(DoctorRegisterResource, "/doctor/register")
 api.add_resource(DoctorLoginResource, "/doctor/login")
 api.add_resource(DoctorDetailsResource, "/doctor")
 api.add_resource(SummaryResource, "/summary")
+api.add_resource(FamilyMemberResource, "/family")
 
 if __name__ == "__main__":
     app.run(debug = True)
