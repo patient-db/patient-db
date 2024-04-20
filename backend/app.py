@@ -141,6 +141,29 @@ class PatientDetailsResource(Resource):
         cursor = conn.cursor()
 
         patient_id = request.args.get("patient_id")
+        if int(patient_id) >= 1000000:
+            cursor.execute("SELECT * FROM FamilyMembers WHERE patient_id = %s", (patient_id, ))
+            patient = cursor.fetchone()
+
+            if patient is None:
+                return make_response(jsonify({"error": "Invalid patient id"}), 401)
+            print(patient)
+
+            # return all the patient details
+
+            patient_details = {
+                "owner_id": patient[0],
+                "name": patient[1],
+                "age": patient[2],
+                "weight": patient[3],
+                "height": patient[4],
+                "blood_group": patient[5],
+                "gender": patient[6]
+            }
+
+            # return as a response
+
+            return make_response(jsonify(patient_details), 200)
 
         cursor.execute("SELECT * FROM patients WHERE patient_id = %s", (patient_id, ))
         patient = cursor.fetchone()
@@ -353,6 +376,45 @@ class SummaryResource(Resource):
 
         return make_response(jsonify({"summary": summary[0]["summary_text"].capitalize()}), 200)
 
+class FamilyMemberResource(Resource):
+    def post(self):
+        conn = connect_to_db()
+        if conn is None:
+            return make_response(jsonify({"error": "Failed to connect to the database"}), 500)
+
+        cursor = conn.cursor()
+        data = request.get_json()
+        print("ERE")
+        owner_id = data.get("owner_id")
+        name = data.get("name")
+        age = data.get("age")
+        weight = data.get("weight")
+        height = data.get("height")
+        blood_group = data.get("blood_group")
+        gender = data.get("gender")
+
+        cursor.execute("INSERT INTO FamilyMembers VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING patient_id", (owner_id, name, age, weight, height, blood_group, gender))
+        patient_id = cursor.fetchone()[0]
+        print(patient_id)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return make_response(jsonify({"message": "Family member added successfully", "patient_id": patient_id}), 200)
+
+    def get(self):
+        conn = connect_to_db()
+        if conn is None:
+            return make_response(jsonify({"error": "Failed to connect to the database"}), 500)
+
+        cursor = conn.cursor()
+        owner_id = request.args.get("owner_id")
+
+        cursor.execute("SELECT * FROM FamilyMembers WHERE owner_id = (%s)", (owner_id, ))
+        members = cursor.fetchall()
+
+        return make_response(jsonify({"members": members}), 200)
 
 
 api.add_resource(PatientRegisterResource, "/patient/register")
@@ -362,6 +424,7 @@ api.add_resource(DoctorRegisterResource, "/doctor/register")
 api.add_resource(DoctorLoginResource, "/doctor/login")
 api.add_resource(DoctorDetailsResource, "/doctor")
 api.add_resource(SummaryResource, "/summary")
+api.add_resource(FamilyMemberResource, "/family")
 
 if __name__ == "__main__":
     app.run(debug = True)
