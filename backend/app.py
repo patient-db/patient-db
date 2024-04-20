@@ -3,6 +3,9 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # Suppress tensorflow warnings
 
@@ -22,7 +25,8 @@ api = Api(app)
 load_dotenv()
 
 db_url = os.getenv("SECRET_KEY")
-
+server_email = os.getenv("EMAIL")
+server_password = os.getenv("PASSWORD")
 
 
 
@@ -79,6 +83,29 @@ class PatientRegisterResource(Resource):
         cursor.close()
         conn.close()
 
+        # send a success email with patient id
+
+        server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+        server.starttls()
+        try: 
+            server.login(server_email, server_password)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to login to the email server"}), 500)
+        
+        msg = MIMEMultipart()
+        msg['From'] = server_email
+        msg['To'] = email
+        msg['Subject'] = "User Registration Successful"
+        body = f"Hello {name},\n\nYour registration was successful. Your patient ID is {UID}. Please use this ID for future references.\n\nRegards,\nPatientDB Team"
+        msg.attach(MIMEText(body, 'plain'))
+        text = msg.as_string()
+
+        try:
+            server.sendmail(server_email, email, text)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to send the email"}), 500)
+
+        server.quit()
         return make_response(jsonify({"message": "Patient created successfully", "uid": UID}), 201)
 
 class PatientLoginResource(Resource):
@@ -205,6 +232,30 @@ class DoctorRegisterResource(Resource):
         cursor.close()
         conn.close()
 
+        # send a success email with doctor id
+
+        server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+        server.starttls()
+        try: 
+            server.login(server_email, server_password)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to login to the email server"}), 500)
+
+        msg = MIMEMultipart()
+        msg['From'] = server_email
+        msg['To'] = email
+        msg['Subject'] = "User Registration Successful"
+        body = f"Hello {name},\n\nYour registration was successful. Your doctor ID is {UID}. Please use this ID for future references.\n\nRegards,\nPatientDB Team"
+        msg.attach(MIMEText(body, 'plain'))
+        text = msg.as_string()
+
+        try:
+            server.sendmail(server_email, email, text)
+        except Exception as e:
+            return make_response(jsonify({"error": "Failed to send the email"}), 500)
+        
+        server.quit()
+
         return make_response(jsonify({"message": "Doctor created successfully", "uid": UID}), 201)
 
 class DoctorLoginResource(Resource):
@@ -301,6 +352,7 @@ class SummaryResource(Resource):
             return make_response(jsonify({"error": "Failed to summarize the text"}), 500)
 
         return make_response(jsonify({"summary": summary[0]["summary_text"].capitalize()}), 200)
+
 
 
 api.add_resource(PatientRegisterResource, "/patient/register")
