@@ -55,8 +55,9 @@
 
 #uid-data-wrapper {
     position: absolute;
-    top: 50px;
-    right: 50px;
+    top: 20px;
+    right: 20px;
     color: #57a2ff;
-    font-size: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
 }

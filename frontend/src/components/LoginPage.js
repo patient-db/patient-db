@@ -134,52 +134,57 @@ function LoginPage(){
     }
     return (
         <div className="login-wrapper">
-            <h1 id="website-title">PatientDB</h1>
-            <form id="login-form" className={formType === "login" ? "form-active" : "form-inactive"} onSubmit={(e) => handleSubmit(e)}>
-                <h1>Login</h1>
-                <div className="login-as-wrapper">
-                    <button className={doctorBtnClass} onClick={(e) => handleBtn(e, "doctor")}>Doctor</button>
-                    <button className={patientBtnClass} onClick={(e) => handleBtn(e, "patient")}>Patient</button>
-                </div>
-                <div className="form-inputs">
-                    <input type="email"placeholder="Email"></input>
-                    <input type="password"placeholder="Password"></input>
-                    <button type="submit">Login</button>
-                </div>
-                <p onClick={() => setFormType("register")}>Don't have an account?</p>
-            </form>
-            <form id="register-form" className={formType === "register" ? "form-active" : "form-inactive"} onSubmit={(e) => handleSubmit(e)}>
-                <h1>Register</h1>
-                <div className="register-as-wrapper">
-                    <button className={doctorBtnClass} onClick={(e) => handleBtn(e, "doctor")}>Doctor</button>
-                    <button className={patientBtnClass} onClick={(e) => handleBtn(e, "patient")}>Patient</button>
-                </div>
-                <div className="form-inputs">
-                    <input type="email"placeholder="Email"></input>
-                    <input type="password"placeholder="Password"></input>
-                    <input type="text" placeholder="Name"></input>
-                    {
-                        userType === "doctor"
-                        ? <>
-                            <input type="text" placeholder="Specialization"></input>
-                            <input type="number" placeholder="Phone Number"></input>
-                        </>
-                        : <>
-                            <input type="number" placeholder="Phone Number"></input>
-                            <input type="number" placeholder="Age"></input>
-                            <select>
-                                <option selected={true} value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            <input type="number" placeholder="Weight (kg)"></input>
-                            <input type="number" placeholder="Height (cm)"></input>
-                            <input type="text" placeholder="Blood Group"></input>
-                        </>
-                    }
-                    <button type="submit">Register</button>
-                </div>
-                <p onClick={() => setFormType("login")}>Already have an account?</p>
-            </form>
+            <div className="website-title-wrapper">
+                <h1 id="website-title">PatientDB</h1>
+                <p>Decentralized Medical Records Vault</p>
+            </div>
+            <div className="forms">
+                <form id="login-form" className={formType === "login" ? "form-active" : "form-inactive"} onSubmit={(e) => handleSubmit(e)}>
+                    <h1>Login</h1>
+                    <div className="login-as-wrapper">
+                        <button className={doctorBtnClass} onClick={(e) => handleBtn(e, "doctor")}>Doctor</button>
+                        <button className={patientBtnClass} onClick={(e) => handleBtn(e, "patient")}>Patient</button>
+                    </div>
+                    <div className="form-inputs">
+                        <input type="email"placeholder="Email"></input>
+                        <input type="password"placeholder="Password"></input>
+                        <button type="submit">Login</button>
+                    </div>
+                    <p onClick={() => setFormType("register")}>Don't have an account?</p>
+                </form>
+                <form id="register-form" className={formType === "register" ? "form-active" : "form-inactive"} onSubmit={(e) => handleSubmit(e)}>
+                    <h1>Register</h1>
+                    <div className="register-as-wrapper">
+                        <button className={doctorBtnClass} onClick={(e) => handleBtn(e, "doctor")}>Doctor</button>
+                        <button className={patientBtnClass} onClick={(e) => handleBtn(e, "patient")}>Patient</button>
+                    </div>
+                    <div className="form-inputs">
+                        <input type="email"placeholder="Email"></input>
+                        <input type="password"placeholder="Password"></input>
+                        <input type="text" placeholder="Name"></input>
+                        {
+                            userType === "doctor"
+                            ? <>
+                                <input type="text" placeholder="Specialization"></input>
+                                <input type="number" placeholder="Phone Number"></input>
+                            </>
+                            : <>
+                                <input type="number" placeholder="Phone Number"></input>
+                                <input type="number" placeholder="Age"></input>
+                                <select>
+                                    <option selected={true} value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <input type="number" placeholder="Weight (kg)"></input>
+                                <input type="number" placeholder="Height (cm)"></input>
+                                <input type="text" placeholder="Blood Group"></input>
+                            </>
+                        }
+                        <button type="submit">Register</button>
+                    </div>
+                    <p onClick={() => setFormType("login")}>Already have an account?</p>
+                </form>
+            </div>
         </div>
     )
 }

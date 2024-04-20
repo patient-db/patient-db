@@ -2,9 +2,24 @@ import React, {useState, useEffect, useRef} from "react";
 import Web3 from 'web3';
 import { PATIENT_ABI, PATIENT_ADDRESS } from "../contracts/Patient";
 import { DATABASE_ABI, DATABASE_ADDRESS } from "../contracts/Database";
+import Modal from 'react-modal';
 import '../styles/showrecords.css';
+import { Oval } from 'react-loader-spinner';
+import { useReactToPrint } from "react-to-print";
+import { FaFileDownload } from "react-icons/fa";
 
+Modal.setAppElement("#root")
 function ShowRecordsDoctor(){
+    const customStyles = {
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+        },
+    };
     const [web3, setWeb3] = useState(null);
     const [account, setAccount] = useState(null);
     const [databaseContract, setDatabaseContract] = useState(null);
@@ -14,6 +29,16 @@ function ShowRecordsDoctor(){
     const [patientData, setPatientData] = useState({})
     const [dataReady, setDataReady] = useState(false)
     const [specialization, setSpecialization] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false)
+    const [summaryLoading, setSummaryLoading] = useState(false)
+    const [summaryText, setSummaryText] = useState("")
+    const pdfRef = useRef(null)
+    const openModal = () => {
+        setModalOpen(true)
+    }
+    const closeModal = () => {
+        setModalOpen(false)
+    }
     useEffect(() => {
         async function onInit(){
             const BASE = process.env.REACT_APP_BASE_URL;
@@ -85,27 +110,67 @@ function ShowRecordsDoctor(){
                 "sentences": Array.from(records.map(i => i.diseaseDescription))
             }
         }
-        const hugRes = await fetch(HUGGING_URL, {
-            headers: {"Authorization": "Bearer " + HUGGING_TOKEN, "Content-Type": "application/json"},
-            method: "POST",
-            body: JSON.stringify(payload)
-        })
-        const hugJsonRes = await hugRes.json()
-        var count = 0;
-        records.forEach(record => {
-            record.similarity = hugJsonRes[count]
-            count++;
-            if (count === records.length){
-                records.sort((a, b) => b.similarity - a.similarity)
+        try {
+            const hugRes = await fetch(HUGGING_URL, {
+                headers: {"Authorization": "Bearer " + HUGGING_TOKEN, "Content-Type": "application/json"},
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            const hugJsonRes = await hugRes.json()
+            if (hugJsonRes.error !== undefined){
                 setAllData(records)
                 setDataReady(true)
+                return
             }
-        })
+            var count = 0;
+            records.forEach(record => {
+                record.similarity = hugJsonRes[count]
+                count++;
+                if (count === records.length){
+                    records.sort((a, b) => b.similarity - a.similarity)
+                    setAllData(records)
+                    setDataReady(true)
+                }
+            })
+        } catch {
+            setAllData(records)
+            setDataReady(true)
+        }
     }
 
     const handleGetRecords = () => {
         getAllData(databaseContract)
     }
+
+    const handleSummarize = async (e) => {
+        setSummaryLoading(true)
+        openModal()
+        const BASE = process.env.REACT_APP_BASE_URL;
+        const payload = {
+            "text": e.target.innerText
+        }
+        try {
+            const res = await fetch(BASE + "/summary", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            })
+            const jsonRes = await res.json()
+            if (jsonRes.error !== undefined){
+                alert(jsonRes.error)
+            } else {
+                setSummaryText(jsonRes.summary)
+                setSummaryLoading(false)
+            }
+        } catch {
+            alert("Summarization could not be done")
+        }
+    }
+
+    const generatePDF = useReactToPrint({
+        content: () => pdfRef.current,
+        documentTitle: "Records_" + patientIdRef.current?.value.toString()
+    })
 
     return (
         <div className="show-records-wrapper">
@@ -113,6 +178,7 @@ function ShowRecordsDoctor(){
             <div className="patient-details-input">
                 <input type="number" placeholder="Enter patient's id" ref={patientIdRef} />
                 <button onClick={handleGetRecords}>Get Records</button>
+                { dataReady ? <FaFileDownload onClick={generatePDF} id="pdf-download-btn" title="Download Records PDF" /> : ""}
             </div>
             {
                 !dataReady ? <div>Data will appear here</div> :
@@ -139,28 +205,48 @@ function ShowRecordsDoctor(){
                             : ""
                         }
                     </table>
-                    <table>
-                        <tr>
-                            <th>Sr. No.</th>
-                            <th>Disease</th>
-                            <th>Description</th>
-                            <th>Started From</th>
-                        </tr>
-                        {
-                            [...Array.from(allData.map(record => {
-                                return (
-                                    <tr>
-                                        <td>{allData.indexOf(record) + 1}</td>
-                                        <td>{record["diseaseName"]}</td>
-                                        <td>{record["diseaseDescription"]}</td>
-                                        <td>{record["diseaseStartedOn"]}</td>
-                                    </tr>
-                                )
-                            }))]
-                        }
-                    </table>
+                    <div ref={pdfRef}>
+                        <table>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Disease</th>
+                                <th>Description</th>
+                                <th>Started From</th>
+                            </tr>
+                            {
+                                [...Array.from(allData.map(record => {
+                                    return (
+                                        <tr>
+                                            <td>{allData.indexOf(record) + 1}</td>
+                                            <td>{record["diseaseName"]}</td>
+                                            <td onClick={(e) => handleSummarize(e)} id="disease-desc" title="Generate Summary">{record["diseaseDescription"]}</td>
+                                            <td>{record["diseaseStartedOn"]}</td>
+                                        </tr>
+                                    )
+                                }))]
+                            }
+                        </table>
+                    </div>
                 </>
                 }
+            <Modal isOpen={modalOpen} onRequestClose={closeModal}>
+                {
+                    summaryLoading 
+                    ? <div className="summary-loading">
+                        <h1>Generating Summary</h1>
+                        <Oval height="50"
+                            width="50"
+                            radius="5"
+                            color="#57a2ff"
+                            ariaLabel="oval-loading"
+                        />
+                    </div>
+                    : <div className="summary-wrapper">
+                        <h1>Summary</h1>
+                        <p>{summaryText}</p>
+                    </div>
+                }
+            </Modal>
         </div>
     )
 }
