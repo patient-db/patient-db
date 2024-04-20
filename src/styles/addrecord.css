@@ -36,7 +36,7 @@
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     border-radius: 10px;
-    width: 300px;
+    width: 100%;
     border: none;
     outline: none;
     cursor: pointer;
@@ -63,6 +63,31 @@
 .add-record-wrapper form input:focus {
     border: 2px solid #57a2ff;
     transition: 250ms ease-in-out;
+}
+
+.add-record-wrapper form textarea {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    resize: none;
+    width: 400px;
+    height: 200px;
+}
+
+.add-record-wrapper form textarea:focus {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid transparent;
 }
 
 

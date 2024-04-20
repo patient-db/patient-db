@@ -15,7 +15,6 @@ function AddRecord(){
     const navigate = useNavigate()
     useEffect(() => {
         async function onInit(){
-            const BASE = process.env.REACT_APP_BASE_URL
             const patId = localStorage.getItem("patient_uid")
             if (patId === "" || !patId){
                 navigate("/")
@@ -94,8 +93,8 @@ function AddRecord(){
             <form onSubmit={addRecord}>
                 <h1>Add a record</h1>
                 <input type="text" placeholder="Disease Name" />
-                <input type="text" placeholder="Disease Description" />
-                <input type="text" placeholder="Disease started from" />
+                <textarea type="text" placeholder="Disease Description" />
+                <input type="date" placeholder="Disease started from" />
                 <button type="submit">Add Record</button>
             </form>
         </div>
