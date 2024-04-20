@@ -1,0 +1,73 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.add-record-wrapper
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+}
+
+.add-record-wrapper form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #f0f0f0;
+    padding: 2rem;
+    border-radius: 5px;
+}
+
+.add-record-wrapper form h1 {
+    font-size: 2rem;
+    color: #57a2ff;
+}
+
+.add-record-wrapper form button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 10px;
+    width: 300px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #57a2ff;
+    color: white;
+}
+
+.add-record-wrapper form button:hover {
+    background: #3179d4;
+    transition: 250ms ease-in-out;
+}
+
+.add-record-wrapper form input {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid transparent;
+}
+
+.add-record-wrapper form input:focus {
+    border: 2px solid #57a2ff;
+    transition: 250ms ease-in-out;
+}
+
+
+.add-record-wrapper form input::-webkit-outer-spin-button,
+.add-record-wrapper form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

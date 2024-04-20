@@ -1,0 +1,81 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.show-records-wrapper
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    gap: 1rem;
+}
+
+.show-records-wrapper h1 {
+    color: #57a2ff;
+}
+.show-records-wrapper table {
+    border-collapse: collapse;
+}
+  
+.show-records-wrapper table td,
+.show-records-wrapper table th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 1rem;
+}
+  
+.show-records-wrapper table tr:nth-child(even) {
+    background-color: rgba(87, 162, 255, 0.1);
+}
+
+.patient-details-input {
+    display: flex;
+    gap: 1rem;
+}
+
+.patient-details-input input {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background: #f0f0f0;
+    border: 2px solid transparent;
+}
+
+.patient-details-input input:focus {
+    border: 2px solid #57a2ff;
+    transition: 250ms ease-in-out;
+}
+
+.patient-details-input input::-webkit-outer-spin-button,
+.patient-details-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.patient-details-input button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #57a2ff;
+    color: white;
+}
+
+.patient-details-input button:hover {
+    background: #3179d4;
+    transition: 250ms ease-in-out;
+}

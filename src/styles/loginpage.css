@@ -1,0 +1,133 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-wrapper
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100vh;
+}
+
+#login-form,
+#register-form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    background: #f0f0f0;
+    padding: 2rem;
+    border-radius: 5px;
+}
+
+#login-form h1,
+#register-form h1 {
+    font-size: 2rem;
+    color: #57a2ff;
+}
+
+.login-as-wrapper,
+.register-as-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+
+.login-as-wrapper button,
+.register-as-wrapper button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 200px;
+}
+
+.login-as-wrapper .button-active,
+.register-as-wrapper .button-active {
+    background: #57a2ff;
+    color: white;
+}
+
+.form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-inputs button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #57a2ff;
+    color: white;
+}
+
+.form-inputs button:hover {
+    background: #3179d4;
+    transition: 250ms ease-in-out;
+}
+
+#login-form input,
+#register-form input {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid transparent;
+}
+
+#login-form input:focus,
+#register-form input:focus {
+    border: 2px solid #57a2ff;
+    transition: 250ms ease-in-out;
+}
+
+#login-form input::-webkit-outer-spin-button,
+#login-form input::-webkit-inner-spin-button,
+#register-form input::-webkit-outer-spin-button,
+#register-form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+#login-form p,
+#register-form p {
+    text-align: center;
+    cursor: pointer;
+}
+
+#login-form p:hover,
+#register-form p:hover {
+    color: #57a2ff;
+    transition: 250ms ease-in-out;
+}
+
+.form-active
+{
+    display: flex;
+}
+
+.form-inactive
+{
+    display: none !important;
+}

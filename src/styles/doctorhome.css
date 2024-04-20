@@ -1,0 +1,54 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.doctor-home-wrapper
+{
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    min-height: 100vh;
+    gap: 1rem;
+}
+
+.menu-wrapper {
+    display: flex;
+    width: 400px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu div {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.menu div:hover {
+    background: #57a2ff;
+    color: white;
+    transition: 250ms ease-in-out
+}
+
+.menu-separator {
+    width: 1px;
+    height: 100vh;
+    background: #d2d5d9;
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+}

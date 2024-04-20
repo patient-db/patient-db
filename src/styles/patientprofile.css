@@ -1,0 +1,87 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.patient-profile-wrapper
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    gap: 1rem;
+}
+
+.patient-profile-wrapper h1 {
+    color: #57a2ff;
+}
+
+.patient-profile-wrapper .patient-profile {
+    display: flex;
+    flex-direction: column;
+    background: #f0f0f0;
+    border-radius: 5px;
+    padding: 3rem;
+    gap: 1rem;
+}
+
+.patient-profile-wrapper .patient-profile section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.patient-profile-wrapper .patient-profile section label {
+    color: #57a2ff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.patient-profile-wrapper .patient-profile section input {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    width: 400px;
+    border: 2px solid transparent;
+    background: white;
+    cursor: pointer;
+}
+
+.patient-profile-wrapper .patient-profile section input:focus {
+    border: 2px solid #57a2ff;
+    transition: 250ms ease-in-out;
+}
+
+
+.patient-profile-wrapper .patient-profile section input::-webkit-outer-spin-button,
+.patient-profile-wrapper .patient-profile section input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.patient-profile-wrapper .patient-profile button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #57a2ff;
+    margin-top: 1rem;
+    color: white;
+}
+
+.patient-profile-wrapper .patient-profile button:hover {
+    background: #3179d4;
+    transition: 250ms ease-in-out;
+}
