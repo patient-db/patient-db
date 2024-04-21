@@ -42,7 +42,6 @@ function LoginPage(){
                         body: JSON.stringify(payload)
                     })
                     const jsonRes = await res.json()
-                    console.log(jsonRes)
                     if (jsonRes.error !== undefined){
                         alert(jsonRes.error)
                     } else {
@@ -72,7 +71,6 @@ function LoginPage(){
                         body: JSON.stringify(payload)
                     })
                     const jsonRes = await res.json()
-                    console.log(jsonRes)
                     if (jsonRes.error !== undefined){
                         alert(jsonRes.error)
                     } else {

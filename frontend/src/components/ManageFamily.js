@@ -37,7 +37,6 @@ function ManageFamily(){
                     alert(data.error)
                 } else {
                     setMembers(data.members)
-                    console.log(data.members)
                 }
             })
             .catch(e => alert("Some error occured"))

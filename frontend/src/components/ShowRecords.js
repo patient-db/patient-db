@@ -44,25 +44,6 @@ function ShowRecords(){
         }
     }, [databaseContract])
 
-    const addRecord = (e) => {
-        e.preventDefault()
-        console.log(e)
-        console.log(patientId)
-        const patientData = {"patientId": patientId}
-        const weight = e.target[0].value;
-        const height = e.target[1].value;
-        const bloodGroup = e.target[2].value;
-        const diseaseName = e.target[3].value;
-        const diseaseDescription = e.target[4].value;
-        const diseaseStartedOn = e.target[5].value;
-        const recordData = {"weight": weight, "height": height, "bloodGroup": bloodGroup, "diseaseName": diseaseName, "diseaseDescription": diseaseDescription, "diseaseStartedOn": diseaseStartedOn, "patientId": patientId}
-        const jsonString = JSON.stringify({patientData, recordData})
-        databaseContract.methods.saveData(jsonString, "111").send({from: account})
-        .once('receipt', receipt => {
-            console.log("saved", receipt)
-        })
-    }
-
     const getAllData = async (databaseContract) => {
         let records = []
 

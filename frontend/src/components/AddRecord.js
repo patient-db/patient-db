@@ -79,7 +79,6 @@ function AddRecord(){
     const addRecord = (e) => {
         e.preventDefault()
         const _patientId = currMember === "Yourself" ? patientId : memberIds[memberNames.indexOf(currMember)]
-        console.log(_patientId);
         const patientData = {"patientId": _patientId}
         const diseaseName = e.target[1].value;
         const diseaseDescription = e.target[2].value;
@@ -88,7 +87,7 @@ function AddRecord(){
         const jsonString = JSON.stringify({patientData, recordData})
         databaseContract.methods.saveData(jsonString, parseInt(Math.random() * 1000000).toString()).send({from: account})
         .once('receipt', receipt => {
-            console.log("saved", receipt)
+            alert("Record stored successfully")
         })
     }
 
@@ -109,10 +108,6 @@ function AddRecord(){
         }
         setAllData(records)
     }
-
-    useEffect(() => {
-        console.log("All Data Changed: ", allData)
-    }, [allData])
 
     return (
         <div className="add-record-wrapper">
